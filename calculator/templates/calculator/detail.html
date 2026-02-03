@@ -1,0 +1,82 @@
+{% extends 'calculator/base.html' %}
+
+{% block title %}Execution #{{ execution.id }} - Cashflow Calculator{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Execution #{{ execution.id }}</h2>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="value">{{ execution.input_rows }}</div>
+            <div class="label">Input Rows</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">{{ execution.output_rows }}</div>
+            <div class="label">Output Rows</div>
+        </div>
+        <div class="stat-card">
+            <div class="value"><span class="status status-{{ execution.status }}">{{ execution.get_status_display }}</span></div>
+            <div class="label">Status</div>
+        </div>
+    </div>
+
+    <div class="detail-row">
+        <span class="detail-label">Input File</span>
+        <span class="detail-value">{{ execution.input_file.name|default:"N/A" }}</span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">Output File</span>
+        <span class="detail-value">{{ execution.output_file.name|default:"Not generated yet" }}</span>
+    </div>
+    <div class="detail-row">
+        <span class="detail-label">Created At</span>
+        <span class="detail-value">{{ execution.created_at|date:"M d, Y H:i:s" }}</span>
+    </div>
+    {% if execution.completed_at %}
+    <div class="detail-row">
+        <span class="detail-label">Completed At</span>
+        <span class="detail-value">{{ execution.completed_at|date:"M d, Y H:i:s" }}</span>
+    </div>
+    {% endif %}
+
+    {% if execution.error_message %}
+    <div class="error-box">
+        <strong>Error:</strong> {{ execution.error_message }}
+    </div>
+    {% endif %}
+
+    <div class="actions">
+        {% if execution.status == 'pending' or execution.status == 'failed' %}
+        <form method="post" action="{% url 'calculator:process' execution.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Process</button>
+        </form>
+        {% endif %}
+
+        {% if execution.input_file %}
+        <a href="{% url 'calculator:download_input' execution.id %}" class="btn btn-secondary">Download Input</a>
+        {% endif %}
+
+        {% if execution.output_file %}
+        <a href="{% url 'calculator:download_output' execution.id %}" class="btn btn-primary">Download Output</a>
+        {% endif %}
+
+        <a href="{% url 'calculator:index' %}" class="btn btn-secondary">Back to Upload</a>
+    </div>
+</div>
+
+{% if execution.status == 'completed' %}
+<div class="card">
+    <h2>Execution Summary</h2>
+    <p style="color: #666;">
+        Successfully processed <strong>{{ execution.input_rows }}</strong> employee records
+        and generated <strong>{{ execution.output_rows }}</strong> cashflow calculation rows.
+    </p>
+    <p style="color: #666; margin-top: 10px;">
+        The output includes projected salaries and expected death outflow calculations
+        for each employee from their current age until retirement (age 60).
+    </p>
+</div>
+{% endif %}
+{% endblock %}

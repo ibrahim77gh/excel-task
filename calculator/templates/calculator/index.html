@@ -1,0 +1,69 @@
+{% extends 'calculator/base.html' %}
+
+{% block title %}Upload CSV - Cashflow Calculator{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Upload Input CSV</h2>
+    <p style="margin-bottom: 20px; color: #666;">
+        Upload a CSV file containing employee data. The file should include columns:
+        <strong>emp_id, emp_name, date_birth, date_joining, salary</strong>
+    </p>
+
+    <form method="post" action="{% url 'calculator:upload' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="input_file" accept=".csv" required>
+        <button type="submit" class="btn btn-primary">Upload File</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Expected CSV Format</h2>
+    <p style="margin-bottom: 15px; color: #666;">Your CSV can include optional assumptions at the top, followed by employee data:</p>
+
+    <pre style="background: #f8f9fa; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 0.85rem;">
+valuation_date,2024-12-31
+discount_rate,0.0545
+salary_increase_rate,0.05
+retirement_age,60
+emp_id,emp_name,date_birth,date_joining,salary
+1,Employee 1,1989-02-07,2024-02-07,11280.25
+2,Employee 2,2001-04-08,2024-06-02,8029.80
+3,Employee 3,1983-12-30,2024-07-03,2517.00
+    </pre>
+
+    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">
+        <strong>Note:</strong> If assumptions are not provided, default values will be used.
+    </p>
+</div>
+
+{% if executions %}
+<div class="card">
+    <h2>Recent Executions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Input Rows</th>
+                <th>Output Rows</th>
+                <th>Created</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for execution in executions %}
+            <tr>
+                <td>#{{ execution.id }}</td>
+                <td><span class="status status-{{ execution.status }}">{{ execution.get_status_display }}</span></td>
+                <td>{{ execution.input_rows }}</td>
+                <td>{{ execution.output_rows }}</td>
+                <td>{{ execution.created_at|date:"M d, Y H:i" }}</td>
+                <td><a href="{% url 'calculator:detail' execution.id %}" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.85rem;">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

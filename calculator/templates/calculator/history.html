@@ -1,0 +1,54 @@
+{% extends 'calculator/base.html' %}
+
+{% block title %}Execution History - Cashflow Calculator{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Execution History</h2>
+
+    {% if executions %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Input Rows</th>
+                <th>Output Rows</th>
+                <th>Created</th>
+                <th>Completed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for execution in executions %}
+            <tr>
+                <td>#{{ execution.id }}</td>
+                <td><span class="status status-{{ execution.status }}">{{ execution.get_status_display }}</span></td>
+                <td>{{ execution.input_rows }}</td>
+                <td>{{ execution.output_rows }}</td>
+                <td>{{ execution.created_at|date:"M d, Y H:i" }}</td>
+                <td>{{ execution.completed_at|date:"M d, Y H:i"|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'calculator:detail' execution.id %}" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.85rem;">View</a>
+                    {% if execution.input_file %}
+                    <a href="{% url 'calculator:download_input' execution.id %}" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.85rem;">Input</a>
+                    {% endif %}
+                    {% if execution.output_file %}
+                    <a href="{% url 'calculator:download_output' execution.id %}" class="btn btn-primary" style="padding: 5px 12px; font-size: 0.85rem;">Output</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p>No executions yet. Upload a CSV file to get started.</p>
+        <a href="{% url 'calculator:index' %}" class="btn btn-primary" style="margin-top: 15px;">Upload CSV</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+valuation_date,2024-12-31
+discount_rate,0.0545
+salary_increase_rate,0.05
+retirement_age,60
+emp_id,emp_name,date_birth,date_joining,salary
+1,Employee 1,1989-02-07,2024-02-07,11280.25
+2,Employee 2,2001-04-08,2024-06-02,8029.80
+3,Employee 3,1983-12-30,2024-07-03,2517.00
+4,Employee 4,1993-02-28,2024-12-15,11891.25
+5,Employee 5,1980-09-09,2013-09-01,6698.85
+6,Employee 6,1984-12-21,2008-02-01,10115.15
+7,Employee 7,1972-09-15,2020-04-01,3111.00
