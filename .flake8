@@ -1,0 +1,6 @@
+[flake8]
+exclude = 
+    # Excludes all .py files in the root and all subdirectories
+    *.py,
+    # Excludes everything in the current directory and below
+    ./* 

@@ -1,8 +1,7 @@
-import io
 from datetime import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, FileResponse
+from django.http import FileResponse
 from django.contrib import messages
 from django.core.files.base import ContentFile
 
